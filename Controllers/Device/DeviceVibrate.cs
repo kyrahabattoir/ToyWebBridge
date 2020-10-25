@@ -19,8 +19,11 @@ namespace ButtplugWebBridge.Controllers
         {
             DeviceActionResponse output = new DeviceActionResponse(Request, name, "VibrateCmd", power.ToString());
 
+            if (!Register.IsDevice(name))
+                return NotFound(output);
+
             if (!await Register.SendVibrateCmd(name, power))
-                return StatusCode(405,output);
+                return BadRequest(output);
 
             return Ok(output);
         }

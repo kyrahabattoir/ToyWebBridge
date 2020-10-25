@@ -18,14 +18,15 @@ namespace ButtplugWebBridge.Controllers
             _logger = logger;
             Register = register;
         }
+
         [HttpGet]
-        public ActionResult<DeviceList> Get()
+        public ActionResult Get()
         {
-            return new DeviceList(Request, Register.ListDevices().Select(d => d).ToArray());
+            return Ok(new DeviceList(Request, Register.ListDevices().Select(d => d).ToArray()));
         }
 
         [HttpGet("{name}")]
-        public ActionResult<DeviceResponse> Device(string name)
+        public ActionResult Device(string name)
         {
             DeviceResponse output = new DeviceResponse(Request, name);
 

@@ -12,8 +12,11 @@ namespace ButtplugWebBridge.Controllers
         {
             DeviceActionResponse output = new DeviceActionResponse(Request, "StopDeviceCmd", name);
 
+            if (!Register.IsDevice(name))
+                return NotFound(output);
+
             if (!await Register.StopDeviceCmd(name))
-                return StatusCode(405, output);
+                return BadRequest(output);
 
             return Ok(output);
         }
