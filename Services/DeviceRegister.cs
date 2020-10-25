@@ -46,6 +46,11 @@ namespace ButtplugWebBridge.Services
             _logger.LogInformation("RemoveDevice: " + device.Name);
             devices.Remove(device.Name);
         }
+        public void RemoveAllDevices()
+        {
+            _logger.LogInformation("RemoveDevice: all devices unregistered.");
+            devices.Clear();
+        }
         public int DeviceCount()
         {
             return devices.Count;

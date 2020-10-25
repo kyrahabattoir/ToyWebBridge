@@ -31,6 +31,7 @@ namespace ButtplugWebBridge.Services
         void OnDisconnected()
         {
             _logger.LogInformation("Disconnected from Intiface.");
+            Register.RemoveAllDevices();
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
