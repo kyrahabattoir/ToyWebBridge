@@ -44,6 +44,8 @@ http://localhost:5000/Device/Lovense%20Hush/StopDeviceCmd
 ```
 
 #### Status Codes
+Errors are indicated with HTTP response status codes.
+
 ##### 200 Ok
 The command/query has been executed successfully.
 
