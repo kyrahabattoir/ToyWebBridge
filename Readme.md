@@ -14,41 +14,41 @@ You will most likely have to setup port-forwarding if you want the web bridge to
 
 Ctrl+C to exit.
 
-#API
+## API
 
 Examples will use localhost:5000 as the Web Bridge address.
 
-## Devices
+### Devices
 
 The device APIs have general structure of `/Device/{device}/{function}/{argument}`
 and is defined in `Controllers/DevicesController.cs` and also `Controllers/Devices/`
 
-### Get a list of devices
+#### Get a list of devices
 ```
 http://localhost:5000/Device/
 ```
 
-### Querying a specific device
+#### Querying a specific device
 ```
 http://localhost:5000/Device/Lovense%20Hush
 ```
 
-### Set vibrator level (all motors)
+#### Set vibrator level (all motors)
 ```
 http://localhost:5000/Device/Lovense%20Hush/VibrateCmd/50
 ```
 
-### Shut down the device
+#### Shut down the device
 ```
 http://localhost:5000/Device/Lovense%20Hush/StopDeviceCmd
 ```
 
-### Status Codes
-#### 200 Ok
+#### Status Codes
+##### 200 Ok
 The command/query has been executed successfully.
 
-#### 400 Bad Request
+##### 400 Bad Request
 The requested device doesn't support this function.
 
-#### 404 Not Found
+##### 404 Not Found
 The requested device doesn't exist.
