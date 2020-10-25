@@ -20,6 +20,9 @@ namespace ButtplugWebBridge.Services
 
         readonly IDictionary<string, ButtplugClientDevice> devices = new ConcurrentDictionary<string, ButtplugClientDevice>();
 
+        /// <summary>
+        /// Called when a device is announced by intiface.
+        /// </summary>
         public void AddDevice(ButtplugClientDevice device)
         {
             if (devices.ContainsKey(device.Name))
@@ -35,6 +38,10 @@ namespace ButtplugWebBridge.Services
                                                                                         Environment.NewLine,
                                                                                         string.Join(Environment.NewLine + "\t", device.AllowedMessages.Select(x => $"{x.Key} {x.Value.FeatureCount}"))));
         }
+
+        /// <summary>
+        /// Called when a device is removed by intiface.
+        /// </summary>
         public void RemoveDevice(ButtplugClientDevice device)
         {
             if (!devices.ContainsKey(device.Name))
@@ -46,19 +53,22 @@ namespace ButtplugWebBridge.Services
             _logger.LogInformation("RemoveDevice: " + device.Name);
             devices.Remove(device.Name);
         }
+
+        /// <summary>
+        /// Removes all registered devices/
+        /// When we get disconnected from intiface (crash usually)
+        /// </summary>
         public void RemoveAllDevices()
         {
             _logger.LogInformation("RemoveDevice: all devices unregistered.");
             devices.Clear();
         }
-        public int DeviceCount()
-        {
-            return devices.Count;
-        }
+
         public List<string> ListDevices()
         {
             return new List<string>(devices.Keys);
         }
+
         public bool IsDevice(string deviceName)
         {
             return devices.ContainsKey(deviceName);
