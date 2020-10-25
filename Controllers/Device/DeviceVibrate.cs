@@ -8,15 +8,10 @@ namespace ButtplugWebBridge.Controllers
 {
     public partial class DeviceController
     {
-        // GET: /Device/<name>/VibrateCmd
+        // GET: /Device/<name>/VibrateCmd?power=0
+        // GET: /Device/<name>/VibrateCmd?power=50
+        // GET: /Device/<name>/VibrateCmd?power=100
         [HttpGet("{name}/VibrateCmd")]
-        public string DeviceVibrate(string name)
-        {
-            return "SendVibrateCmd";
-        }
-
-        // GET: /Device/<name>/VibrateCmd/<power>
-        [HttpGet("{name}/VibrateCmd/{power}")]
         public async Task<ActionResult> DeviceVibrate(string name, uint power)
         {
             Type action = typeof(VibrateCmd);

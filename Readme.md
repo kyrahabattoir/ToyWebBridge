@@ -33,9 +33,11 @@ http://localhost:5000/Device/
 http://localhost:5000/Device/Lovense%20Hush
 ```
 
-#### Set vibrator level (all motors)
+#### Set global vibration level (all vibration motors)
 ```
-http://localhost:5000/Device/Lovense%20Hush/VibrateCmd/50
+http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?power=0
+http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?power=50
+http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?power=100
 ```
 
 #### Shut down the device
