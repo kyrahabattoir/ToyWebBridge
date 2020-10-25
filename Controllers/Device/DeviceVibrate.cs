@@ -1,5 +1,7 @@
-﻿using ButtplugWebBridge.Models;
+﻿using Buttplug.Core.Messages;
+using ButtplugWebBridge.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace ButtplugWebBridge.Controllers
@@ -17,15 +19,15 @@ namespace ButtplugWebBridge.Controllers
         [HttpGet("{name}/VibrateCmd/{power}")]
         public async Task<ActionResult> DeviceVibrate(string name, uint power)
         {
-            DeviceActionResponse output = new DeviceActionResponse(Request, name, "VibrateCmd", power.ToString());
+            Type action = typeof(VibrateCmd);
 
             if (!Register.IsDevice(name))
-                return NotFound(output);
+                return NotFound(new BaseActionResponse(Request, name, action));
 
             if (!await Register.SendVibrateCmd(name, power))
-                return BadRequest(output);
+                return BadRequest(new BaseActionResponse(Request, name, action));
 
-            return Ok(output);
+            return Ok(new ActionVibrateResponse(Request, name, power));
         }
     }
 }

@@ -98,6 +98,7 @@ namespace ButtplugWebBridge.Services
             }
 
             _logger.LogInformation("Connected! Check Server for Client Name.");
+
             _logger.LogInformation("Starting to scan.");
             await client.StartScanningAsync();
         }

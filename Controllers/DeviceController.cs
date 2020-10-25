@@ -22,19 +22,16 @@ namespace ButtplugWebBridge.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(new DeviceList(Request, Register.ListDevices().Select(d => d).ToArray()));
+            return Ok(new DeviceListResponse(Request, Register.ListDevices().Select(d => d).ToArray()));
         }
 
         [HttpGet("{name}")]
         public ActionResult Device(string name)
         {
-            DeviceResponse output = new DeviceResponse(Request, name);
-
             if (!Register.IsDevice(name))
-                return NotFound(output);
+                return NotFound(new BaseDeviceResponse(Request, name));
 
-            output.Capabilities = Register.GetSupportedCommands(name);
-            return Ok(output);
+            return Ok(new DeviceResponse(Request, name, Register.GetSupportedCommands(name)));
         }
     }
 }

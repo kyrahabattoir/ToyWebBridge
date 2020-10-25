@@ -1,4 +1,5 @@
-﻿using ButtplugWebBridge.Models;
+﻿using Buttplug.Core.Messages;
+using ButtplugWebBridge.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace ButtplugWebBridge.Controllers
         [HttpGet("{name}/StopDeviceCmd")]
         public async Task<ActionResult> DeviceStop(string name)
         {
-            DeviceActionResponse output = new DeviceActionResponse(Request, "StopDeviceCmd", name);
+            BaseActionResponse output = new BaseActionResponse(Request, name, typeof(StopDeviceCmd));
 
             if (!Register.IsDevice(name))
                 return NotFound(output);
