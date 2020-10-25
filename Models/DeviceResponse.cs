@@ -20,7 +20,7 @@ namespace ButtplugWebBridge.Models
     public class DeviceResponse : BasedResponse
     {
         public string Device { get; }
-        public string[] Capabilities { get; set; }
+        public Dictionary<string,uint> Capabilities { get; set; }
         public DeviceResponse(HttpRequest request, string device) : base(request) { Device = device; }
     }
     public class DeviceActionResponse : BasedResponse

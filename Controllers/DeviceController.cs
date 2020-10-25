@@ -32,7 +32,7 @@ namespace ButtplugWebBridge.Controllers
             if (!Register.IsDevice(name))
                 return NotFound(output);
 
-            output.Capabilities = Register.GetSupportedCommands(name).Select(d => d).ToArray();
+            output.Capabilities = Register.GetSupportedCommands(name);
             return Ok(output);
         }
     }

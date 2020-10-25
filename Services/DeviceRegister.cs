@@ -58,13 +58,14 @@ namespace ButtplugWebBridge.Services
         {
             return devices.ContainsKey(deviceName);
         }
-        public List<string> GetSupportedCommands(string deviceName)
+        public Dictionary<string, uint> GetSupportedCommands(string deviceName)
         {
             if (!devices.ContainsKey(deviceName))
                 return null;
 
             //TODO Make real commands.
-            return devices[deviceName].AllowedMessages.Select(message => message.Key.Name).ToList();
+            return devices[deviceName].AllowedMessages.ToDictionary(message => message.Key.Name,
+                                                                    message => message.Value.FeatureCount.GetValueOrDefault());
         }
         public async Task<bool> SendVibrateCmd(string device_name, uint speed)
         {
