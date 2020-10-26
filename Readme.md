@@ -14,6 +14,15 @@ You will most likely have to setup port-forwarding if you want the web bridge to
 
 Ctrl+C to exit.
 
+# Safety and privacy
+I realize that this might be important to outline:
+
+At the present time, **there is no authentication system in place**, anyone with the IP/Port can connect.
+
+Using this web bridge **requires revealing your computer's public IP** to the program that will interface with it.
+
+I made this mainly to control toys from "Second Life" scripts which effectively act as a 3rd party "anonymity buffer", this solution is acceptable for me, but might not be for you, please be safe.
+
 ## API
 
 Examples will use localhost:5000 as the Web Bridge address.
