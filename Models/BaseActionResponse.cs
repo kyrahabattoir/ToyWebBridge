@@ -6,10 +6,10 @@ namespace ButtplugWebBridge.Models
 {
     public class BaseActionResponse : BaseDeviceResponse
     {
-        public string DeviceAction { get; }
+        public string Action { get; }
         public BaseActionResponse(HttpRequest request, string device, Type action) : base(request, device)
         {
-            DeviceAction = action.Name;
+            Action = action.Name;
         }
     }
 }

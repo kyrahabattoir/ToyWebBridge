@@ -6,7 +6,9 @@ namespace ButtplugWebBridge.Models
     public class BasedResponse //yes.
     {
         public string Query { get; }
-
-        public BasedResponse(HttpRequest request) { Query = request.Path; }
+        public BasedResponse(HttpRequest request)
+        {
+            Query = request.Path;
+        }
     }
 }

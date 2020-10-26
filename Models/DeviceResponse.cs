@@ -6,10 +6,10 @@ namespace ButtplugWebBridge.Models
 {
     public class DeviceResponse : BaseDeviceResponse
     {
-        public Dictionary<string, uint> Capabilities { get; }
-        public DeviceResponse(HttpRequest request, string device, Dictionary<string, uint> capabilities) : base(request, device)
+        public Dictionary<string, uint> Features { get; }
+        public DeviceResponse(HttpRequest request, string device, Dictionary<string, uint> features) : base(request, device)
         {
-            Capabilities = capabilities;
+            Features = features;
         }
     }
 }

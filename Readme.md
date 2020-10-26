@@ -32,7 +32,7 @@ http://localhost:5000/Device/
 ```
 http://localhost:5000/Device/Lovense%20Hush
 ```
-Currently returns supported commands for the queried device
+Currently returns supported features for the queried device
 
 #### Set global vibration level (all vibration motors)
 ```
@@ -42,7 +42,7 @@ http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?speed=100
 ```
 
 #### Set vibration level on each vibrator independently
-Note: You have to set the speed of all vibrators at once, the number of supplied values MUST match VibrateCmd Capability.
+Note: You have to set the speed of all vibrators at once, the number of supplied values MUST match VibrateCmd Feature.
 
 Example for VibrateCmd = 1:
 ```

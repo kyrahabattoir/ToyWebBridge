@@ -6,10 +6,10 @@ namespace ButtplugWebBridge.Models
 {
     public class ActionSingleVibrateResponse : BaseActionResponse
     {
-        public uint[] Power { get; }
-        public ActionSingleVibrateResponse(HttpRequest request, string device, uint[] power) : base(request, device, typeof(SingleMotorVibrateCmd))
+        public uint[] Speed { get; }
+        public ActionSingleVibrateResponse(HttpRequest request, string device, uint[] speed) : base(request, device, typeof(SingleMotorVibrateCmd))
         {
-            Power = power;
+            Speed = speed;
         }
     }
 }

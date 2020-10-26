@@ -5,10 +5,10 @@ namespace ButtplugWebBridge.Models
 {
     public class DeviceListResponse : BasedResponse
     {
-        public string[] DeviceList { get; }
+        public string[] Devices { get; }
         public DeviceListResponse(HttpRequest request, string[] devicelist) : base(request)
         {
-            DeviceList = devicelist;
+            Devices = devicelist;
         }
     }
 }
