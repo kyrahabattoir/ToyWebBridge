@@ -17,11 +17,10 @@ namespace ButtplugWebBridge.Controllers
         public async Task<ActionResult> SingleMotorVibrate(string name, string speed)
         {
             Type action = typeof(SingleMotorVibrateCmd);
+            var response = new BaseActionResponse(Request, name, action);
 
-            if (!Register.IsDevice(name))
-            {
-                return NotFound(new BaseActionResponse(Request, name, action));
-            }
+            if (speed==null)
+                return BadRequest(response);
 
             uint[] speeds;
             try
@@ -30,13 +29,18 @@ namespace ButtplugWebBridge.Controllers
             }
             catch (FormatException)
             {
-                return BadRequest(new BaseActionResponse(Request, name, action));
+                return BadRequest(response);
             }
 
-            if (!await Register.SendVibrateCmd(name, speeds))
-                return BadRequest(new BaseActionResponse(Request, name, action));
+            response = new ActionSingleVibrateResponse(Request, name, speeds);
 
-            return Ok(new ActionSingleVibrateResponse(Request, name, speeds));
+            if (!Register.IsDevice(name))
+                return NotFound(response);
+
+            if (!await Register.SendVibrateCmd(name, speeds))
+                return BadRequest(response);
+
+            return Ok(response);
         }
     }
 }

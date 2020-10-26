@@ -15,15 +15,15 @@ namespace ButtplugWebBridge.Controllers
         [HttpGet("{name}/VibrateCmd")]
         public async Task<ActionResult> DeviceVibrate(string name, uint speed)
         {
-            Type action = typeof(VibrateCmd);
+            var response = new ActionVibrateResponse(Request, name, speed);
 
             if (!Register.IsDevice(name))
-                return NotFound(new BaseActionResponse(Request, name, action));
+                return NotFound(response);
 
             if (!await Register.SendVibrateCmd(name, speed))
-                return BadRequest(new BaseActionResponse(Request, name, action));
+                return BadRequest(response);
 
-            return Ok(new ActionVibrateResponse(Request, name, speed));
+            return Ok(response);
         }
     }
 }
