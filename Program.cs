@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
 using ButtplugWebBridge.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;

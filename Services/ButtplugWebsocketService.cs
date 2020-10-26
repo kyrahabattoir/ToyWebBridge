@@ -1,4 +1,5 @@
-﻿using Buttplug.Client;
+﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
+using Buttplug.Client;
 using Buttplug.Client.Connectors.WebsocketConnector;
 using Buttplug.Core;
 using Microsoft.Extensions.Hosting;

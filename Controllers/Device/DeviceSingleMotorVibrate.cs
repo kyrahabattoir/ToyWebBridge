@@ -1,4 +1,5 @@
-﻿using Buttplug.Core.Messages;
+﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
+using Buttplug.Core.Messages;
 using ButtplugWebBridge.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;

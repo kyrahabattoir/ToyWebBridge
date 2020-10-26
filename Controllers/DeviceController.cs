@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

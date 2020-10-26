@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 
 namespace ButtplugWebBridge.Models
