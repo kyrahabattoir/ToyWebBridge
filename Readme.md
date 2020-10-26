@@ -28,16 +28,34 @@ and is defined in `Controllers/DevicesController.cs` and also `Controllers/Devic
 http://localhost:5000/Device/
 ```
 
-#### Querying a specific device
+#### Querying a specific device status
 ```
 http://localhost:5000/Device/Lovense%20Hush
 ```
+Currently returns supported commands for the queried device
 
 #### Set global vibration level (all vibration motors)
 ```
-http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?power=0
-http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?power=50
-http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?power=100
+http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?speed=0
+http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?speed=50
+http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?speed=100
+```
+
+#### Set vibration level on each vibrator independently
+Note: You have to set the speed of all vibrators at once, the number of supplied values MUST match VibrateCmd Capability.
+
+Example for VibrateCmd = 1:
+```
+http://localhost:5000/Device/Lovense%20Hush/SingleMotorVibrateCmd?speed=0
+http://localhost:5000/Device/Lovense%20Hush/SingleMotorVibrateCmd?speed=50
+http://localhost:5000/Device/Lovense%20Hush/SingleMotorVibrateCmd?speed=100
+```
+
+Example for VibrateCmd = 2:
+```
+http://localhost:5000/Device/Lovense%20Hush/SingleMotorVibrateCmd?speed=0,100
+http://localhost:5000/Device/Lovense%20Hush/SingleMotorVibrateCmd?speed=50,50
+http://localhost:5000/Device/Lovense%20Hush/SingleMotorVibrateCmd?speed=100,0
 ```
 
 #### Shut down the device

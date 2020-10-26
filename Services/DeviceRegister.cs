@@ -95,6 +95,30 @@ namespace ButtplugWebBridge.Services
             await device.SendVibrateCmd(Math.Clamp(speed * 0.01f, 0f, 1f));
             return true;
         }
+        public async Task<bool> SendVibrateCmd(string device_name, IEnumerable<uint> speed)
+        {
+            if (!devices.ContainsKey(device_name))
+                return false;
+
+            var device = devices[device_name];
+            var VibrateCmd = typeof(VibrateCmd);
+
+            if (!device.AllowedMessages.ContainsKey(VibrateCmd))
+                return false;
+
+            if (device.AllowedMessages[VibrateCmd].FeatureCount != speed.Count())
+            {
+                _logger.LogInformation("SendVibrateCmd: failed featurecount check.");
+                return false;
+            }
+
+            List<double> data = new List<double>();
+            foreach (uint entry in speed)
+                data.Add(Math.Clamp(entry * 0.01f, 0f, 1f));
+
+            await device.SendVibrateCmd(data);
+            return true;
+        }
         public async Task<bool> StopDeviceCmd(string deviceName)
         {
             if (!devices.ContainsKey(deviceName))
