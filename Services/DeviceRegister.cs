@@ -26,16 +26,11 @@ namespace ButtplugWebBridge.Services
         /// </summary>
         public void AddDevice(ButtplugClientDevice device)
         {
-            if (devices.ContainsKey(device.Name))
-            {
-                _logger.LogDebug($"Trying to add already existing device ${device.Name}");
-                return;
-            }
-
-            devices.Add(device.Name, device);
+            string name = Rename(device.Name);
+            devices.Add(name, device);
 
             _logger.LogInformation(String.Format("AddDevice {0} allowed commands:{1}\t{2}",
-                                                                                        device.Name,
+                                                                                        name,
                                                                                         Environment.NewLine,
                                                                                         string.Join(Environment.NewLine + "\t", device.AllowedMessages.Select(x => $"{x.Key} {x.Value.FeatureCount}"))));
         }
@@ -61,7 +56,6 @@ namespace ButtplugWebBridge.Services
         /// </summary>
         public void RemoveAllDevices()
         {
-            _logger.LogInformation("RemoveDevice: all devices unregistered.");
             devices.Clear();
         }
 
@@ -132,6 +126,31 @@ namespace ButtplugWebBridge.Services
 
             await device.StopDeviceCmd();
             return true;
+        }
+
+        /// <summary>
+        /// Take the original device name and create a new one.
+        /// For those rare cases where identically named devices are detected.
+        /// </summary>
+        /// <param name="name">Original device name</param>
+        /// <returns>Collision-free name</returns>
+        string Rename(string name)
+        {
+            //Should we just remove spaces in toy names?
+            //name.Replace(" ", "_");
+
+            if (!devices.ContainsKey(name)) return name;
+
+            int suffix = 2;
+            string new_name;
+            do
+            {
+                new_name = name + " " + suffix.ToString();
+                suffix++;
+            }
+            while (devices.ContainsKey(new_name));
+
+            return new_name;
         }
     }
 }
