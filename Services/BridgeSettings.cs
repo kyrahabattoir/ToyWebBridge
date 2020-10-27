@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ButtplugWebBridge.Services
 {
     public class BridgeSettings
     {
         public string SecretKey { get; set; }
+        public bool DeviceNameCloaking { get; set; }
+        public Dictionary<string, string> NameCloakingTable { get; set; }
+
         public static BridgeSettings Instance;
         public BridgeSettings()
         {

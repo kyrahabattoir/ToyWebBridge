@@ -1,7 +1,6 @@
 # Buttplug Web Bridge
 
 # Running
-
 In the project root folder use the command:
 ```dotnet run```
 
@@ -14,7 +13,7 @@ You will most likely have to setup port-forwarding if you want the web bridge to
 
 Ctrl+C to exit.
 
-# Safety and privacy
+# Safety
 I realize that this might be important to outline:
 
 Using this web bridge **requires revealing your computer's public IP** to the program that will interface with it.
@@ -22,10 +21,14 @@ Using this web bridge **requires revealing your computer's public IP** to the pr
 I made this program to control toys from "Second Life" scripts which effectively act as a 3rd party "anonymity buffer", this solution is acceptable for me, but might not be for you, please be safe.
 
 ## Security
-
 * You can set a **SecretKey** in **appsettings.json**.
 * If no **SecretKey** is set, a temporary key will be generated (and displayed in the console window).
 * To connect to the Web bridge, apps have to supply a header parameter named "SecretKey" with the proper value.
+
+# Privacy
+You can hide the actual model of each registered device in **appsettings.json**.
+* If no **DeviceNameCloaking** is set, devices names found in the **NameCloakingTable** will be replaced by the specified name.
+* Values in **NameCloakingTable** don't have to be unique (duplicates will be given a unique number), but record names must be.
 
 ## API
 Examples will use localhost:5000 as the Web Bridge address.

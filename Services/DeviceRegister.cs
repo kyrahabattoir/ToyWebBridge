@@ -2,6 +2,7 @@
 using Buttplug.Client;
 using Buttplug.Core.Messages;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace ButtplugWebBridge.Services
     public class DeviceRegister
     {
         private readonly ILogger<DeviceRegister> _logger;
+        private readonly BridgeSettings _settings;
 
-        public DeviceRegister(ILogger<DeviceRegister> logger)
+        public DeviceRegister(ILogger<DeviceRegister> logger, IOptions<BridgeSettings> settings)
         {
             _logger = logger;
+            _settings = settings.Value;
         }
 
         readonly IDictionary<string, ButtplugClientDevice> devices = new ConcurrentDictionary<string, ButtplugClientDevice>();
@@ -26,13 +29,20 @@ namespace ButtplugWebBridge.Services
         /// </summary>
         public void AddDevice(ButtplugClientDevice device)
         {
-            string name = Rename(device.Name);
+            string name = device.Name;
+            string real_name = ".";
+
+            if (_settings.DeviceNameCloaking)
+            {
+                real_name = string.Format(" ({0}).", device.Name);
+                name = CloakDeviceName(name);
+            }
+
+            name = DeCollideDeviceName(name);
+
             devices.Add(name, device);
 
-            _logger.LogInformation(String.Format("AddDevice {0} allowed commands:{1}\t{2}",
-                                                                                        name,
-                                                                                        Environment.NewLine,
-                                                                                        string.Join(Environment.NewLine + "\t", device.AllowedMessages.Select(x => $"{x.Key} {x.Value.FeatureCount}"))));
+            _logger.LogInformation(String.Format("New device detected: {0}{1}", name, real_name));
         }
 
         /// <summary>
@@ -46,7 +56,7 @@ namespace ButtplugWebBridge.Services
                 return;
             }
 
-            _logger.LogInformation("RemoveDevice: " + device.Name);
+            _logger.LogInformation("Device Removed: " + device.Name);
             devices.Remove(device.Name);
         }
 
@@ -134,7 +144,7 @@ namespace ButtplugWebBridge.Services
         /// </summary>
         /// <param name="name">Original device name</param>
         /// <returns>Collision-free name</returns>
-        string Rename(string name)
+        private string DeCollideDeviceName(string name)
         {
             //Should we just remove spaces in toy names?
             //name.Replace(" ", "_");
@@ -151,6 +161,18 @@ namespace ButtplugWebBridge.Services
             while (devices.ContainsKey(new_name));
 
             return new_name;
+        }
+        /// <summary>
+        /// Cloaks the device's name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private string CloakDeviceName(string name)
+        {
+            if (!_settings.NameCloakingTable.ContainsKey(name))
+                return name;
+
+            return _settings.NameCloakingTable[name];
         }
     }
 }
