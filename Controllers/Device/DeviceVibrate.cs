@@ -1,8 +1,6 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
-using Buttplug.Core.Messages;
 using ButtplugWebBridge.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace ButtplugWebBridge.Controllers
@@ -13,10 +11,8 @@ namespace ButtplugWebBridge.Controllers
         // GET: /Device/<name>/VibrateCmd?speed=50
         // GET: /Device/<name>/VibrateCmd?speed=100
         [HttpGet("{name}/VibrateCmd")]
-        public async Task<ActionResult> DeviceVibrate(string name, uint speed, string pw)
+        public async Task<ActionResult> DeviceVibrate(string name, uint speed)
         {
-            if (!HasAccess(pw)) return Unauthorized();
-
             var response = new ActionVibrateResponse(Request, name, speed);
 
             if (!Register.IsDevice(name))

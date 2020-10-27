@@ -1,5 +1,6 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
 using Buttplug.Core.Messages;
+using ButtplugWebBridge.Filter;
 using ButtplugWebBridge.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,10 +15,8 @@ namespace ButtplugWebBridge.Controllers
         // GET: /Device/<name>/SingleMotorVibrateCmd?speed=50,10
         // GET: /Device/<name>/SingleMotorVibrateCmd?speed=0,100
         [HttpGet("{name}/SingleMotorVibrateCmd")]
-        public async Task<ActionResult> SingleMotorVibrate(string name, string speed, string pw)
+        public async Task<ActionResult> SingleMotorVibrate(string name, string speed)
         {
-            if (!HasAccess(pw)) return Unauthorized();
-
             Type action = typeof(SingleMotorVibrateCmd);
             var response = new BaseActionResponse(Request, name, action);
 

@@ -22,7 +22,6 @@ namespace ButtplugWebBridge
                 {
                     services.AddSingleton<DeviceRegister>();
                     services.AddSingleton<BridgeSettings>();
-                    //services.AddSingleton<BridgeSettings>();
                     services.AddHostedService<ButtplugWebsocketService>();
                     services.AddControllers().AddJsonOptions(options =>
                     {

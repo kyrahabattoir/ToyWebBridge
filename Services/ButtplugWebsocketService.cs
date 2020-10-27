@@ -43,14 +43,16 @@ namespace ButtplugWebBridge.Services
         {
             _logger.LogInformation("ButtplugWebsocket Service running.");
 
-            if (_settings.UseRandomPasswords)
+            if (_settings.AccessControl)
             {
-                _settings.Password = KeyGenerator.GetUniqueKey(20);
-                _logger.LogWarning($"\n /!\\ Web bridge password: " + _settings.Password + " /!\\\n");
+                if (_settings.SecretKey == string.Empty)
+                {
+                    _settings.SecretKey = KeyGenerator.GetUniqueKey((int)_settings.RandomKeyLength);
+                    _logger.LogWarning($"\n /!\\ Web bridge access key: " + _settings.SecretKey + " /!\\\n");
+                }
             }
-
-            if (_settings.Password == "")
-                _logger.LogCritical($"\n /!\\ Web bridge allows connections without a password! /!\\\n");
+            else
+                _logger.LogCritical($"\n /!\\ Web bridge allows connections without an access key! /!\\\n");
 
             _timer = new Timer(MonitorWebsocket, null, TimeSpan.Zero,
                 TimeSpan.FromSeconds(5));
