@@ -2,10 +2,12 @@
 using Buttplug.Client;
 using Buttplug.Client.Connectors.WebsocketConnector;
 using Buttplug.Core;
+using ButtplugWebBridge.Misc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using UniqueKey;
@@ -43,16 +45,16 @@ namespace ButtplugWebBridge.Services
         {
             _logger.LogInformation("ButtplugWebsocket Service running.");
 
-            if (_settings.AccessControl)
+            if (_settings.SecretKey == string.Empty)
             {
-                if (_settings.SecretKey == string.Empty)
-                {
-                    _settings.SecretKey = KeyGenerator.GetUniqueKey((int)_settings.RandomKeyLength);
-                    _logger.LogWarning($"\n /!\\ Web bridge access key: " + _settings.SecretKey + " /!\\\n");
-                }
+                _settings.SecretKey = KeyGenerator.GetUniqueKey(20);
+                _logger.LogWarning($"\n /!\\ Web bridge (generated) access key: " + _settings.SecretKey + " /!\\\n");
             }
-            else
-                _logger.LogCritical($"\n /!\\ Web bridge allows connections without an access key! /!\\\n");
+
+            //TODO: maybe make this an option?
+            //_settings.SecretKey = Sha1String.Hash(_settings.SecretKey);
+
+            _logger.LogWarning("HASH  "+ _settings.SecretKey);
 
             _timer = new Timer(MonitorWebsocket, null, TimeSpan.Zero,
                 TimeSpan.FromSeconds(5));

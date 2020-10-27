@@ -22,22 +22,15 @@ Using this web bridge **requires revealing your computer's public IP** to the pr
 I made this program to control toys from "Second Life" scripts which effectively act as a 3rd party "anonymity buffer", this solution is acceptable for me, but might not be for you, please be safe.
 
 ## Security
-Security options can be adjusted in **appsettings.json**.
 
-When **AccessControl** is enabled, a secret access key "SecretKey" has to be provided in the query header.
-
-Without the right access key, a 401 Unauthorized error code will be returned.
-
-* You can set **SecretKey** to any chain of character.
-* If **AccessControl** is true and no **SecretKey** is set, a random access key will be generated (shown in console).
-* (**NOT RECOMMENDED**) If **AccessControl** is false and **SecretKey** is blank, access control is disabled.
+* You can set a **SecretKey** in **appsettings.json**.
+* If no **SecretKey** is set, a temporary key will be generated (and displayed in the console window).
+* To connect to the Web bridge, apps have to supply a header parameter named "SecretKey" with the proper value.
 
 ## API
-
 Examples will use localhost:5000 as the Web Bridge address.
 
 ### Devices
-
 The device APIs have general structure of `/Device/{device}/{function}/{argument}`
 and is defined in `Controllers/DevicesController.cs` and also `Controllers/Devices/`
 
