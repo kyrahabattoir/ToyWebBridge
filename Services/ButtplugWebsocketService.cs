@@ -2,12 +2,10 @@
 using Buttplug.Client;
 using Buttplug.Client.Connectors.WebsocketConnector;
 using Buttplug.Core;
-using ButtplugWebBridge.Misc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using UniqueKey;
@@ -115,9 +113,9 @@ namespace ButtplugWebBridge.Services
                 return;
             }
 
-            _logger.LogInformation("Connected! Check Server for Client Name.");
+            _logger.LogInformation("ButtplugWebsocket Service is connected!");
 
-            _logger.LogInformation("Starting to scan.");
+            _logger.LogInformation("Scanning for devices...");
             await client.StartScanningAsync();
         }
         public async Task CleanupAsync()
