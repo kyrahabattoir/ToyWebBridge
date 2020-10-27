@@ -11,9 +11,9 @@ namespace ButtplugWebBridge.Controllers
     {
         // GET: /
         [HttpGet]
-        public string Get()
+        public ActionResult Get()
         {
-            return "root";
+            return NotFound();
         }
     }
 }

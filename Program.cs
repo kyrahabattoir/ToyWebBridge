@@ -12,7 +12,6 @@ namespace ButtplugWebBridge
         {
             CreateHostBuilder(args).Build().Run();
         }
-
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
@@ -22,6 +21,8 @@ namespace ButtplugWebBridge
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton<DeviceRegister>();
+                    services.AddSingleton<BridgeSettings>();
+                    //services.AddSingleton<BridgeSettings>();
                     services.AddHostedService<ButtplugWebsocketService>();
                     services.AddControllers().AddJsonOptions(options =>
                     {

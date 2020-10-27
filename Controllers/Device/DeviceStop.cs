@@ -10,8 +10,10 @@ namespace ButtplugWebBridge.Controllers
     {
         // GET: /Device/<name>/StopDeviceCmd
         [HttpGet("{name}/StopDeviceCmd")]
-        public async Task<ActionResult> DeviceStop(string name)
+        public async Task<ActionResult> DeviceStop(string name, string pw)
         {
+            if (!HasAccess(pw)) return Unauthorized();
+
             BaseActionResponse output = new BaseActionResponse(Request, name, typeof(StopDeviceCmd));
 
             if (!Register.IsDevice(name))

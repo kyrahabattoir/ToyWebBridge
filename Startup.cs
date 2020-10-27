@@ -1,4 +1,5 @@
 /* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
+using ButtplugWebBridge.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,7 @@ namespace ButtplugWebBridge
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.Configure<BridgeSettings>(Configuration.GetSection("BridgeConfiguration").Bind);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

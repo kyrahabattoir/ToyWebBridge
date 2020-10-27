@@ -14,8 +14,10 @@ namespace ButtplugWebBridge.Controllers
         // GET: /Device/<name>/SingleMotorVibrateCmd?speed=50,10
         // GET: /Device/<name>/SingleMotorVibrateCmd?speed=0,100
         [HttpGet("{name}/SingleMotorVibrateCmd")]
-        public async Task<ActionResult> SingleMotorVibrate(string name, string speed)
+        public async Task<ActionResult> SingleMotorVibrate(string name, string speed, string pw)
         {
+            if (!HasAccess(pw)) return Unauthorized();
+
             Type action = typeof(SingleMotorVibrateCmd);
             var response = new BaseActionResponse(Request, name, action);
 

@@ -13,8 +13,10 @@ namespace ButtplugWebBridge.Controllers
         // GET: /Device/<name>/VibrateCmd?speed=50
         // GET: /Device/<name>/VibrateCmd?speed=100
         [HttpGet("{name}/VibrateCmd")]
-        public async Task<ActionResult> DeviceVibrate(string name, uint speed)
+        public async Task<ActionResult> DeviceVibrate(string name, uint speed, string pw)
         {
+            if (!HasAccess(pw)) return Unauthorized();
+
             var response = new ActionVibrateResponse(Request, name, speed);
 
             if (!Register.IsDevice(name))

@@ -4,23 +4,27 @@ using Buttplug.Client.Connectors.WebsocketConnector;
 using Buttplug.Core;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using UniqueKey;
 
 namespace ButtplugWebBridge.Services
 {
     public class ButtplugWebsocketService : IHostedService, IDisposable
     {
         private readonly ILogger<ButtplugWebsocketService> _logger;
+        private readonly BridgeSettings _settings;
         private Timer _timer;
 
         private DeviceRegister Register { get; }
         private ButtplugWebsocketConnector connector;
         private ButtplugClient client;
-        public ButtplugWebsocketService(ILogger<ButtplugWebsocketService> logger, DeviceRegister register)
+        public ButtplugWebsocketService(ILogger<ButtplugWebsocketService> logger, DeviceRegister register, IOptions<BridgeSettings> settings)
         {
             _logger = logger;
+            _settings = settings.Value;
             Register = register;
         }
 
@@ -38,6 +42,15 @@ namespace ButtplugWebBridge.Services
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("ButtplugWebsocket Service running.");
+
+            if (_settings.UseRandomPasswords)
+            {
+                _settings.Password = KeyGenerator.GetUniqueKey(20);
+                _logger.LogWarning($"\n /!\\ Web bridge password: " + _settings.Password + " /!\\\n");
+            }
+
+            if (_settings.Password == "")
+                _logger.LogCritical($"\n /!\\ Web bridge allows connections without a password! /!\\\n");
 
             _timer = new Timer(MonitorWebsocket, null, TimeSpan.Zero,
                 TimeSpan.FromSeconds(5));
