@@ -25,10 +25,10 @@ I made this program to control toys from "Second Life" scripts which effectively
 * If no **SecretKey** is set, a temporary key will be generated (and displayed in the console window).
 * To connect to the Web bridge, apps have to supply a header parameter named "SecretKey" with the proper value.
 
-# Privacy
+## Privacy
 You can hide the actual model of each registered device in **appsettings.json**.
-* If no **DeviceNameCloaking** is set, devices names found in the **NameCloakingTable** will be replaced by the specified name.
-* Values in **NameCloakingTable** don't have to be unique (duplicates will be given a unique number), but record names must be.
+* If no **DeviceNameCloaking** is set, entries in **NameCloakingTable** will be replaced by their respective value.
+* Values in **NameCloakingTable** don't have to be unique (duplicates will be given a unique number).
 
 ## API
 Examples will use localhost:5000 as the Web Bridge address.
