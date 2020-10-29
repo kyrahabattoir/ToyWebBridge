@@ -44,7 +44,7 @@ namespace ButtplugWebBridge.Controllers
         [HttpGet]
         public async Task<ActionResult> StopDeviceCmd(string name)
         {
-            BasedResponse output = new BasedResponse("StopDeviceCmd");
+            BasedResponse output = new BaseDeviceResponse("StopDeviceCmd",name);
 
             if (!Register.IsDevice(name))
                 return NotFound(output);
