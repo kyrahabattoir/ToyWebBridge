@@ -83,11 +83,17 @@ Errors are indicated with HTTP response status codes.
 ##### 200 Ok
 The command/query has been executed successfully.
 
-##### 401 Ok
-Access denied, make sure that you supplied a valid access key.
-
 ##### 400 Bad Request
 The requested device doesn't support this function.
 
+##### 401 Unauthorized
+Access denied, make sure that you supplied a valid access key.
+
 ##### 404 Not Found
 The requested device doesn't exist (or the URL is invalid).
+
+## License
+
+Buttplug Web Bridge is licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+![CC BY-NC-SA 4.0](https://i.imgur.com/BlZ8chD.png)
