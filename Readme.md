@@ -34,25 +34,25 @@ You can hide the actual model of each registered device in **appsettings.json**.
 Examples will use localhost:5000 as the Web Bridge address.
 
 ### Devices
-The device APIs have general structure of `/Device/{device}/{function}/{argument}`
-and is defined in `Controllers/DevicesController.cs` and also `Controllers/Devices/`
+The device APIs have general structure of `/api/Device/{Action}/{Devicename}/{argument}`
+and is defined in `Controllers/DevicesController.cs`
 
 #### Get a list of devices
 ```
-http://localhost:5000/Device
+http://localhost:5000/api/Device/List
 ```
 
 #### Querying a specific device status
 ```
-http://localhost:5000/Device/Lovense%20Hush
+http://localhost:5000/api/Device/Info/Lovense%20Hush
 ```
 Currently returns supported features for the queried device
 
 #### Set global vibration level (all vibration motors)
 ```
-http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?speed=0
-http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?speed=50
-http://localhost:5000/Device/Lovense%20Hush/VibrateCmd?speed=100
+http://localhost:5000/api/Device/VibrateCmd/Lovense%20Hush/0
+http://localhost:5000/api/Device/VibrateCmd/Lovense%20Hush/50
+http://localhost:5000/api/Device/VibrateCmd/Lovense%20Hush/100
 ```
 
 #### Set vibration level on each vibrator independently
@@ -60,21 +60,21 @@ Note: You have to set the speed of all vibrators at once, the number of supplied
 
 Example for VibrateCmd = 1:
 ```
-http://localhost:5000/Device/Lovense%20Hush/SingleMotorVibrateCmd?speed=0
-http://localhost:5000/Device/Lovense%20Hush/SingleMotorVibrateCmd?speed=50
-http://localhost:5000/Device/Lovense%20Hush/SingleMotorVibrateCmd?speed=100
+http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Hush/0
+http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Hush/50
+http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Hush/100
 ```
 
 Example for VibrateCmd = 2:
 ```
-http://localhost:5000/Device/Lovense%20Hush/SingleMotorVibrateCmd?speed=0,100
-http://localhost:5000/Device/Lovense%20Hush/SingleMotorVibrateCmd?speed=50,50
-http://localhost:5000/Device/Lovense%20Hush/SingleMotorVibrateCmd?speed=100,0
+http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Edge/0,100
+http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Edge/50,50
+http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Edge/100,0
 ```
 
 #### Shut down the device
 ```
-http://localhost:5000/Device/Lovense%20Hush/StopDeviceCmd
+http://localhost:5000/api/Device/StopDeviceCmd/Lovense%20Hush
 ```
 
 #### Status Codes
@@ -83,8 +83,11 @@ Errors are indicated with HTTP response status codes.
 ##### 200 Ok
 The command/query has been executed successfully.
 
+##### 401 Ok
+Access denied, make sure that you supplied a valid access key.
+
 ##### 400 Bad Request
 The requested device doesn't support this function.
 
 ##### 404 Not Found
-The requested device doesn't exist.
+The requested device doesn't exist (or the URL is invalid).

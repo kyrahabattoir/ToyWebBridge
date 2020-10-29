@@ -1,13 +1,11 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
-using Buttplug.Core.Messages;
-using Microsoft.AspNetCore.Http;
 
 namespace ButtplugWebBridge.Models
 {
-    public class ActionVibrateResponse : BaseActionResponse
+    public class ActionVibrateResponse : BaseDeviceResponse
     {
         public uint Speed { get; }
-        public ActionVibrateResponse(HttpRequest request, string device, uint speed) : base(request, device, typeof(VibrateCmd))
+        public ActionVibrateResponse(string action, string device, uint speed) : base(action, device)
         {
             Speed = speed;
         }

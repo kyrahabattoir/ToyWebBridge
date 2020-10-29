@@ -1,14 +1,18 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
-using Microsoft.AspNetCore.Http;
+using System;
 
 namespace ButtplugWebBridge.Models
 {
     public class BasedResponse //yes.
     {
-        public string Query { get; }
-        public BasedResponse(HttpRequest request)
+        public string Action { get; }
+        public BasedResponse(Type action)
         {
-            Query = request.Path;
+            Action = action.Name;
+        }
+        public BasedResponse(string action)
+        {
+            Action = action;
         }
     }
 }
