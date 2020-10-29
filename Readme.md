@@ -31,7 +31,7 @@ You can hide the actual model of each registered device in **appsettings.json**.
 * Values in **NameCloakingTable** don't have to be unique (duplicates will be given a unique number).
 
 ## API
-Examples will use localhost:5000 as the Web Bridge address.
+Examples use localhost:5000 as the Buttplug Web Bridge address and "Lovense Hush" as the device.
 
 ### Devices
 The device APIs have general structure of `/api/Device/{Action}/{Devicename}/{argument}`
