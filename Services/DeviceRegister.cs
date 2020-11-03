@@ -1,6 +1,7 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
 using Buttplug.Client;
 using Buttplug.Core.Messages;
+using ButtplugWebBridge.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -22,7 +23,7 @@ namespace ButtplugWebBridge.Services
             _settings = settings.Value;
         }
 
-        readonly IDictionary<string, ButtplugClientDevice> devices = new ConcurrentDictionary<string, ButtplugClientDevice>();
+        readonly IDictionary<string, DeviceContainer> devices = new ConcurrentDictionary<string, DeviceContainer>();
 
         /// <summary>
         /// Called when a device is announced by intiface.
@@ -40,7 +41,7 @@ namespace ButtplugWebBridge.Services
 
             name = DeCollideDeviceName(name);
 
-            devices.Add(name, device);
+            devices.Add(name, new DeviceContainer(device));
 
             _logger.LogInformation(String.Format("New device detected: {0}{1}", name, real_name));
         }
@@ -94,10 +95,10 @@ namespace ButtplugWebBridge.Services
 
             var device = devices[device_name];
 
-            if (!device.AllowedMessages.ContainsKey(typeof(VibrateCmd)))
+            if (device.VibrationMotorCount == 0)
                 return false;
 
-            await device.SendVibrateCmd(Math.Clamp(speed * 0.01f, 0f, 1f));
+            await device.SendVibrateCmd(speed);
             return true;
         }
         public async Task<bool> SendVibrateCmd(string device_name, IEnumerable<uint> speed)
@@ -106,22 +107,17 @@ namespace ButtplugWebBridge.Services
                 return false;
 
             var device = devices[device_name];
-            var VibrateCmd = typeof(VibrateCmd);
 
-            if (!device.AllowedMessages.ContainsKey(VibrateCmd))
+            if (device.VibrationMotorCount == 0)
                 return false;
 
-            if (device.AllowedMessages[VibrateCmd].FeatureCount != speed.Count())
+            if (device.VibrationMotorCount != speed.Count())
             {
                 _logger.LogInformation("SendVibrateCmd: failed featurecount check.");
                 return false;
             }
 
-            List<double> data = new List<double>();
-            foreach (uint entry in speed)
-                data.Add(Math.Clamp(entry * 0.01f, 0f, 1f));
-
-            await device.SendVibrateCmd(data);
+            await device.SendVibrateCmd(speed);
             return true;
         }
         public async Task<bool> StopDeviceCmd(string deviceName)
