@@ -1,2 +1,2 @@
-dotnet run --urls "http://*:27015"
+dotnet run --urls "http://*:8008"
 pause
