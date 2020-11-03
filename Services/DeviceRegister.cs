@@ -41,7 +41,7 @@ namespace ButtplugWebBridge.Services
 
             name = DeCollideDeviceName(name);
 
-            devices.Add(name, new DeviceContainer(device));
+            devices.Add(name, new DeviceContainer(device, _logger));
 
             _logger.LogInformation(String.Format("New device detected: {0}{1}", name, real_name));
         }
@@ -169,6 +169,19 @@ namespace ButtplugWebBridge.Services
                 return name;
 
             return _settings.NameCloakingTable[name];
+        }
+
+        public bool SequenceVibrateCmd(string device_name, IEnumerable<uint> sequence, bool loop)
+        {
+            if (!devices.ContainsKey(device_name))
+                return false;
+
+            var device = devices[device_name];
+
+            if (device.VibrationMotorCount == 0)
+                return false;
+
+            return device.SendVibrateSequence(sequence.ToList(), loop);
         }
     }
 }

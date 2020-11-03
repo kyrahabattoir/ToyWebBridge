@@ -44,7 +44,7 @@ namespace ButtplugWebBridge.Controllers
         [HttpGet]
         public async Task<ActionResult> StopDeviceCmd(string name)
         {
-            BasedResponse output = new BaseDeviceResponse("StopDeviceCmd",name);
+            BasedResponse output = new BaseDeviceResponse("StopDeviceCmd", name);
 
             if (!Register.IsDevice(name))
                 return NotFound(output);
@@ -95,6 +95,62 @@ namespace ButtplugWebBridge.Controllers
                 return NotFound(response);
 
             if (!await Register.SendVibrateCmd(name, speeds))
+                return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        [Route("[action]/{name}/{sequence}")]
+        [HttpGet]
+        public ActionResult SequenceVibrateCmd(string name, string sequence)
+        {
+            var response = new ActionVibrateResponse("SequenceVibrateCmd", name, 0);
+
+            if (sequence == null)
+                return BadRequest(response);
+
+            uint[] instructions;
+            try
+            {
+                instructions = sequence.Split(',').Select(uint.Parse).ToArray();
+            }
+            catch (FormatException)
+            {
+                return BadRequest(response);
+            }
+
+            if (!Register.IsDevice(name))
+                return NotFound(response);
+
+            if (!Register.SequenceVibrateCmd(name, instructions, false))
+                return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        [Route("[action]/{name}/{sequence}")]
+        [HttpGet]
+        public ActionResult SequenceVibrateLoopCmd(string name, string sequence)
+        {
+            var response = new ActionVibrateResponse("SequenceVibrateLoopCmd", name, 0);
+
+            if (sequence == null)
+                return BadRequest(response);
+
+            uint[] instructions;
+            try
+            {
+                instructions = sequence.Split(',').Select(uint.Parse).ToArray();
+            }
+            catch (FormatException)
+            {
+                return BadRequest(response);
+            }
+
+            if (!Register.IsDevice(name))
+                return NotFound(response);
+
+            if (!Register.SequenceVibrateCmd(name, instructions, true))
                 return BadRequest(response);
 
             return Ok(response);
