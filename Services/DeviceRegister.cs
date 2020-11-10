@@ -171,17 +171,12 @@ namespace ButtplugWebBridge.Services
             return _settings.NameCloakingTable[name];
         }
 
-        public bool SequenceVibrateCmd(string device_name, IEnumerable<uint> sequence, bool loop)
+        public bool SequenceVibrateCmd(string device_name, VibrationPattern pattern)
         {
             if (!devices.ContainsKey(device_name))
                 return false;
 
-            var device = devices[device_name];
-
-            if (device.VibrationMotorCount == 0)
-                return false;
-
-            return device.SendVibrateSequence(sequence.ToList(), loop);
+            return devices[device_name].SendVibrateSequence(pattern);
         }
     }
 }

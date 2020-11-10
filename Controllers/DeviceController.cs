@@ -1,5 +1,4 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
-using Buttplug.Core.Messages;
 using ButtplugWebBridge.Filter;
 using ButtplugWebBridge.Models;
 using ButtplugWebBridge.Services;
@@ -100,57 +99,21 @@ namespace ButtplugWebBridge.Controllers
             return Ok(response);
         }
 
-        [Route("[action]/{name}/{sequence}")]
-        [HttpGet]
-        public ActionResult SequenceVibrateCmd(string name, string sequence)
+        [Route("[action]/{name}")]
+        [HttpPost]
+        public ActionResult SequenceVibrateCmd(string name, [FromBody] VibrationPattern pattern)
         {
-            var response = new ActionVibrateResponse("SequenceVibrateCmd", name, 0);
-
-            if (sequence == null)
-                return BadRequest(response);
-
-            uint[] instructions;
-            try
-            {
-                instructions = sequence.Split(',').Select(uint.Parse).ToArray();
-            }
-            catch (FormatException)
-            {
-                return BadRequest(response);
-            }
+            var response = new BaseDeviceResponse("SequenceVibrateCmd", name);
 
             if (!Register.IsDevice(name))
                 return NotFound(response);
 
-            if (!Register.SequenceVibrateCmd(name, instructions, false))
+            //FIXME Need something better as return.
+
+            if (pattern == null)
                 return BadRequest(response);
 
-            return Ok(response);
-        }
-
-        [Route("[action]/{name}/{sequence}")]
-        [HttpGet]
-        public ActionResult SequenceVibrateLoopCmd(string name, string sequence)
-        {
-            var response = new ActionVibrateResponse("SequenceVibrateLoopCmd", name, 0);
-
-            if (sequence == null)
-                return BadRequest(response);
-
-            uint[] instructions;
-            try
-            {
-                instructions = sequence.Split(',').Select(uint.Parse).ToArray();
-            }
-            catch (FormatException)
-            {
-                return BadRequest(response);
-            }
-
-            if (!Register.IsDevice(name))
-                return NotFound(response);
-
-            if (!Register.SequenceVibrateCmd(name, instructions, true))
+            if (!Register.SequenceVibrateCmd(name, pattern))
                 return BadRequest(response);
 
             return Ok(response);

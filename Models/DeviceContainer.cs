@@ -1,6 +1,5 @@
 ﻿using Buttplug.Client;
 using Buttplug.Core.Messages;
-using ButtplugWebBridge.Controllers;
 using ButtplugWebBridge.Services;
 using Microsoft.Extensions.Logging;
 using System;
@@ -69,63 +68,57 @@ namespace ButtplugWebBridge.Models
         /// <summary>
         /// Plays a vibration sequence on the device.
         /// </summary>
-        /// <param name="values">a list that alternates speed (%) and time (ms)</param>
-        /// <param name="loop">whether the sequence should loop</param>
-        /// <returns></returns>
-        public bool SendVibrateSequence(List<uint> values, bool loop)
+        public bool SendVibrateSequence(VibrationPattern pattern)
         {
-            if (VibrationMotorCount == 0)
+            if (pattern.MotorCount == 0)
                 return false;
 
-            if (values.Count % 2 != 0)
+            if (!pattern.Validate())
                 return false;
-
-            List<DeviceInstruction> sequence = new List<DeviceInstruction>();
-
-            for (var i = 0; i < values.Count; i += 2)
-            {
-                var speed = values[i];
-                var time = values[i + 1];
-
-                var speeds = new List<uint>();
-                for (var j = 0; j < VibrationMotorCount; j++)
-                    speeds.Add(speed);
-
-                sequence.Add(new DeviceInstruction(speeds.ToArray(), time));
-            }
 
             if (_runner != null)
                 _runner.Cancel();
 
             _runner = new CancellationTokenSource();
 
-            _ = SequenceRunner(sequence, loop, _runner.Token);
+            _ = SequenceRunner(pattern, _runner.Token);
             return true;
         }
 
-        async Task SequenceRunner(List<DeviceInstruction> sequence, bool loop, CancellationToken token)
+        async Task SequenceRunner(VibrationPattern pattern, CancellationToken token)
         {
             int sequence_index = 0;
 
             while (!token.IsCancellationRequested)
             {
-                if (sequence_index >= sequence.Count)
+                //either loop the sequence or end.
+                if (sequence_index >= pattern.Time.Count)
                 {
-                    if (!loop)
+                    if (!pattern.Loop)
                         break;
 
                     sequence_index = 0;
                 }
 
-                var instruction = sequence[sequence_index];
+                int time = (int)pattern.Time[sequence_index];
 
-                List<double> data = new List<double>();
-                foreach (uint entry in instruction.speeds)
-                    data.Add(Math.Clamp(entry * 0.01f, 0f, 1f));
+                //1. build payload.
+                List<double> payload = new List<double>();
+                for (var i = 0; i < VibrationMotorCount; i++)
+                {
+                    //if a motor entry was not supplied in the pattern, no big deal, assume zero.
+                    var motor_entry = pattern.Speeds[i];
+                    var motor_speed = motor_entry.ElementAtOrDefault(sequence_index);
+                    payload.Add(Math.Clamp(motor_speed * 0.01f, 0f, 1f));
+                }
 
-                await _device.SendVibrateCmd(data);
-                await Task.Delay((int)instruction.delay);
+                //2. send the payload
+                await _device.SendVibrateCmd(payload);
 
+                //3. sleep
+                await Task.Delay(time);
+
+                //4. rinse and repeat
                 sequence_index++;
             }
         }
