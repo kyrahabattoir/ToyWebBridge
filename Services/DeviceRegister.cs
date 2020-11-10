@@ -85,8 +85,15 @@ namespace ButtplugWebBridge.Services
                 return null;
 
             //TODO Make real commands.
-            return devices[deviceName].AllowedMessages.ToDictionary(message => message.Key.Name,
-                                                                    message => message.Value.FeatureCount.GetValueOrDefault());
+            Dictionary<string, uint> features = devices[deviceName].AllowedMessages.ToDictionary(message => message.Key.Name,
+                                                                                                 message => message.Value.FeatureCount.GetValueOrDefault());
+
+            //Injecting my own commands in the feature list.
+            //Supposedly if we can vibrate, we can sequencevibrate.
+            if (features.ContainsKey(typeof(VibrateCmd).Name))
+                features.Add("SequenceVibrateCmd", 0);
+
+            return features;
         }
         public async Task<bool> SendVibrateCmd(string device_name, uint speed)
         {
