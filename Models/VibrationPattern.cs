@@ -21,20 +21,16 @@ namespace ButtplugWebBridge.Models
             }
         }
 
-        /// <summary>
-        /// Checks that the VibrationPattern contains sane data (all lists are of equal length).
-        /// </summary>
         public bool Validate()
         {
-            if (Speeds == null || Time == null)
+            //No timesteps? goodbye
+            if (Time == null || Time.Count == 0)
                 return false;
 
-            var expected_entries = Time.Count;
-            foreach (List<uint> speed in Speeds)
-            {
-                if (speed.Count != expected_entries)
-                    return false;
-            }
+            //No speed sequences? goodbye
+            if (Speeds == null || Speeds.Count == 0)
+                return false;
+
             return true;
         }
     }

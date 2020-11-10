@@ -69,6 +69,7 @@ namespace ButtplugWebBridge.Controllers
             return Ok(response);
         }
 
+        //Keeping this for now because it is simple to use.
         [Route("[action]/{name}/{speed}")]
         [HttpGet]
         public async Task<ActionResult> SingleMotorVibrateCmd(string name, string speed)

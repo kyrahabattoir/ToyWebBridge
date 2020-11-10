@@ -106,8 +106,13 @@ namespace ButtplugWebBridge.Models
                 List<double> payload = new List<double>();
                 for (var i = 0; i < VibrationMotorCount; i++)
                 {
-                    //if a motor entry was not supplied in the pattern, no big deal, assume zero.
-                    var motor_entry = pattern.Speeds[i];
+                    var motor_index = i;
+                    //if there is only one motor entry, only use that.
+                    if(pattern.Speeds.Count == 1)
+                        motor_index = 0;
+
+                    //if a motor entry/value was not supplied in the pattern, no big deal, assume zero.
+                    var motor_entry = pattern.Speeds.ElementAtOrDefault(motor_index);
                     var motor_speed = motor_entry.ElementAtOrDefault(sequence_index);
                     payload.Add(Math.Clamp(motor_speed * 0.01f, 0f, 1f));
                 }
