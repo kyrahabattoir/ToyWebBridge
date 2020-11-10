@@ -39,20 +39,20 @@ and is defined in `Controllers/DevicesController.cs`
 
 #### Get a list of devices
 ```
-http://localhost:5000/api/Device/List
+GET http://localhost:5000/api/Device/List
 ```
 
 #### Querying a specific device status
 ```
-http://localhost:5000/api/Device/Info/Lovense%20Hush
+GET http://localhost:5000/api/Device/Info/Lovense%20Hush
 ```
 Currently returns supported features for the queried device
 
 #### Set global vibration level (all vibration motors)
 ```
-http://localhost:5000/api/Device/VibrateCmd/Lovense%20Hush/0
-http://localhost:5000/api/Device/VibrateCmd/Lovense%20Hush/50
-http://localhost:5000/api/Device/VibrateCmd/Lovense%20Hush/100
+GET http://localhost:5000/api/Device/VibrateCmd/Lovense%20Hush/0
+GET http://localhost:5000/api/Device/VibrateCmd/Lovense%20Hush/50
+GET http://localhost:5000/api/Device/VibrateCmd/Lovense%20Hush/100
 ```
 
 #### Set vibration level on each vibrator independently
@@ -60,21 +60,59 @@ Note: You have to set the speed of all vibrators at once, the number of supplied
 
 Example for VibrateCmd = 1:
 ```
-http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Hush/0
-http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Hush/50
-http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Hush/100
+GET http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Hush/0
+GET http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Hush/50
+GET http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Hush/100
 ```
 
 Example for VibrateCmd = 2:
 ```
-http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Edge/0,100
-http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Edge/50,50
-http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Edge/100,0
+GET http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Edge/0,100
+GET http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Edge/50,50
+GET http://localhost:5000/api/Device/SingleMotorVibrateCmd/Lovense%20Edge/100,0
 ```
+
+#### Play a vibration sequence
+Devices that support VibrateCmd can play vibration sequences with "SequenceVibrateCmd".
+Unlike the other commands, this one requires to use a JSON encoded POST query.
+
+* A "Time" list indicates how long each sequence step takes.
+* You can control each motor independently, if only only one motor instruction list is sent,
+it is assumed that you want all motors to be controlled at the same time.
+* For devices with more than 2 independent motors (is there any?), ommited entries are treated as 0.
+
+Example:
+```
+POST http://localhost:5000/api/Device/SequenceVibrateCmd/Lovense%20Edge
+```
+Payload example (single/all motors): ( raw/JSON )
+```
+{
+   "Loop":false,
+   "Time":[500,500,500,500],
+   "Speeds":[
+      [10,0,50,0]
+   ]
+}
+```
+Payload example (two independent motors): ( raw/JSON )
+```
+{
+   "Loop":true,
+   "Time":[500,500,500,500],
+   "Speeds":[
+      [10,0,50,0],
+      [0,10,0,50]
+   ]
+}
+```
+* If "Loop" is true, the pattern will repeat until a new instruction is received.
+* When a sequence ends, the motors will keep running at the last "Speed" value.
+* Missing "Speed"values will be considered 0, "Time" determinates the sequence length.
 
 #### Shut down the device
 ```
-http://localhost:5000/api/Device/StopDeviceCmd/Lovense%20Hush
+GET http://localhost:5000/api/Device/StopDeviceCmd/Lovense%20Hush
 ```
 
 #### Status Codes
