@@ -1,5 +1,4 @@
-﻿using Buttplug.Client;
-using Buttplug.Core.Messages;
+﻿using Buttplug;
 using ButtplugWebBridge.Services;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static Buttplug.ServerMessage.Types;
 
 // All Stop/start commands automatically clear any playing sequence.
 namespace ButtplugWebBridge.Models
@@ -55,13 +55,13 @@ namespace ButtplugWebBridge.Models
 
         public async Task<bool> StopDeviceCmd()
         {
-            if (!_device.AllowedMessages.ContainsKey(typeof(StopDeviceCmd)))
+            if (!_device.AllowedMessages.ContainsKey(MessageAttributeType.StopDeviceCmd))
                 return false;
 
             if (_runner != null)
                 _runner.Cancel();
 
-            await _device.StopDeviceCmd();
+            await _device.SendStopDeviceCmd();
             return true;
         }
 
@@ -128,8 +128,8 @@ namespace ButtplugWebBridge.Models
             }
         }
 
-        public uint? VibrationMotorCount => _device.AllowedMessages[typeof(VibrateCmd)].FeatureCount;
-        public Dictionary<Type, MessageAttributes> AllowedMessages
+        public uint? VibrationMotorCount => _device.AllowedMessages[MessageAttributeType.VibrateCmd].FeatureCount;
+        public Dictionary<MessageAttributeType, ButtplugMessageAttributes> AllowedMessages
         {
             get { return _device.AllowedMessages; }
         }

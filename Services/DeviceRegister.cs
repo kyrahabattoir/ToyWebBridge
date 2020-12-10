@@ -1,6 +1,5 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
-using Buttplug.Client;
-using Buttplug.Core.Messages;
+using Buttplug;
 using ButtplugWebBridge.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -9,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Buttplug.ServerMessage.Types;
 
 namespace ButtplugWebBridge.Services
 {
@@ -85,12 +85,12 @@ namespace ButtplugWebBridge.Services
                 return null;
 
             //TODO Make real commands.
-            Dictionary<string, uint> features = devices[deviceName].AllowedMessages.ToDictionary(message => message.Key.Name,
-                                                                                                 message => message.Value.FeatureCount.GetValueOrDefault());
+            Dictionary<string, uint> features = devices[deviceName].AllowedMessages.ToDictionary(message => message.Key.ToString(),
+                                                                                                 message => message.Value.FeatureCount);
 
             //Injecting my own commands in the feature list.
             //Supposedly if we can vibrate, we can sequencevibrate.
-            if (features.ContainsKey(typeof(VibrateCmd).Name))
+            if (features.ContainsKey(MessageAttributeType.VibrateCmd.ToString()))
                 features.Add("SequenceVibrateCmd", 0);
 
             return features;
@@ -134,7 +134,7 @@ namespace ButtplugWebBridge.Services
 
             var device = devices[deviceName];
 
-            if (!device.AllowedMessages.ContainsKey(typeof(StopDeviceCmd)))
+            if (!device.AllowedMessages.ContainsKey(MessageAttributeType.StopDeviceCmd))
                 return false;
 
             await device.StopDeviceCmd();
