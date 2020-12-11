@@ -1,4 +1,4 @@
-# Buttplug Web Bridge
+# Toy Web Bridge
 
 # Running
 In the project root folder use the command:
@@ -31,7 +31,7 @@ You can hide the actual model of each registered device in **appsettings.json**.
 * Values in **NameCloakingTable** don't have to be unique (duplicates will be given a unique number).
 
 ## API
-Examples use localhost:5000 as the Buttplug Web Bridge address and "Lovense Hush" as the device.
+Examples use localhost:5000 as the Toy Web Bridge address and "Lovense Hush" as the device.
 
 ### Devices
 The device APIs have general structure of `/api/Device/{Action}/{Devicename}/{argument}`
@@ -132,6 +132,6 @@ The requested device doesn't exist (or the URL is invalid).
 
 ## License
 
-Buttplug Web Bridge is licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+Toy Web Bridge is licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 ![CC BY-NC-SA 4.0](https://i.imgur.com/BlZ8chD.png)
