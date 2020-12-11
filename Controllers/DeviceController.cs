@@ -1,14 +1,14 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
-using ButtplugWebBridge.Filter;
-using ButtplugWebBridge.Models;
-using ButtplugWebBridge.Services;
+using ToyWebBridge.Filter;
+using ToyWebBridge.Models;
+using ToyWebBridge.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ButtplugWebBridge.Controllers
+namespace ToyWebBridge.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

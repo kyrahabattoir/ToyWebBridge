@@ -1,5 +1,6 @@
-﻿using Buttplug;
-using ButtplugWebBridge.Services;
+﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
+using Buttplug;
+using ToyWebBridge.Services;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 using static Buttplug.ServerMessage.Types;
 
 // All Stop/start commands automatically clear any playing sequence.
-namespace ButtplugWebBridge.Models
+namespace ToyWebBridge.Models
 {
     public class DeviceContainer
     {

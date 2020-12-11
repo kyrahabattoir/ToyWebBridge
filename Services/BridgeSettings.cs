@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
+using System.Collections.Generic;
 
-namespace ButtplugWebBridge.Services
+namespace ToyWebBridge.Services
 {
     public class BridgeSettings
     {

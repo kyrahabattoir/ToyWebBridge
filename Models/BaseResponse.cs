@@ -1,7 +1,7 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
 using System;
 
-namespace ButtplugWebBridge.Models
+namespace ToyWebBridge.Models
 {
     public class BasedResponse //yes.
     {

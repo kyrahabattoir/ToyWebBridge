@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
-using ButtplugWebBridge.Services;
+using ToyWebBridge.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace ButtplugWebBridge
+namespace ToyWebBridge
 {
     public class Program
     {
@@ -22,7 +22,7 @@ namespace ButtplugWebBridge
                 {
                     services.AddSingleton<DeviceRegister>();
                     services.AddSingleton<BridgeSettings>();
-                    services.AddHostedService<ButtplugWebsocketService>();
+                    services.AddHostedService<WebsocketService>();
                     services.AddControllers().AddJsonOptions(options =>
                     {
                         options.JsonSerializerOptions.PropertyNamingPolicy = null;

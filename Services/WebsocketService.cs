@@ -8,11 +8,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using UniqueKey;
 
-namespace ButtplugWebBridge.Services
+namespace ToyWebBridge.Services
 {
-    public class ButtplugWebsocketService : IHostedService, IDisposable
+    public class WebsocketService : IHostedService, IDisposable
     {
-        private readonly ILogger<ButtplugWebsocketService> _logger;
+        private readonly ILogger<WebsocketService> _logger;
         private readonly BridgeSettings _settings;
         private Timer _timer;
         private bool isConnected;
@@ -20,7 +20,7 @@ namespace ButtplugWebBridge.Services
 
         private DeviceRegister Register { get; }
         private ButtplugClient client;
-        public ButtplugWebsocketService(ILogger<ButtplugWebsocketService> logger, DeviceRegister register, IOptions<BridgeSettings> settings)
+        public WebsocketService(ILogger<WebsocketService> logger, DeviceRegister register, IOptions<BridgeSettings> settings)
         {
             _logger = logger;
             _settings = settings.Value;
@@ -57,7 +57,10 @@ namespace ButtplugWebBridge.Services
         {
             if (client != null)
             {
-                if (isConnected) return;
+                if (isConnected)
+                {
+                    return;
+                }
                 await Disconnect();
             }
             await Connect();
@@ -135,7 +138,7 @@ namespace ButtplugWebBridge.Services
         async Task StartScanning()
         {
             if (isScanning) return;
-            isScanning = false;
+            isScanning = true;
 
             if (client == null) return;
 
@@ -149,6 +152,7 @@ namespace ButtplugWebBridge.Services
 
             if (client == null) return;
 
+            _logger.LogInformation("Stop Scanning...");
             await client.StopScanningAsync();
         }
         public void Dispose()

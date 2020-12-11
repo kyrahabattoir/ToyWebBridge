@@ -1,6 +1,6 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
 using Buttplug;
-using ButtplugWebBridge.Models;
+using ToyWebBridge.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Buttplug.ServerMessage.Types;
 
-namespace ButtplugWebBridge.Services
+namespace ToyWebBridge.Services
 {
     public class DeviceRegister
     {

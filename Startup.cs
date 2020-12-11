@@ -1,12 +1,12 @@
 /* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
-using ButtplugWebBridge.Services;
+using ToyWebBridge.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace ButtplugWebBridge
+namespace ToyWebBridge
 {
     public class Startup
     {

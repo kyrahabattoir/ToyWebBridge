@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ButtplugWebBridge.Misc
+namespace ToyWebBridge.Misc
 {
     public class Sha1String
     {

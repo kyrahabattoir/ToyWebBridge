@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
 
-namespace ButtplugWebBridge.Models
+namespace ToyWebBridge.Models
 {
     public class DeviceInstruction
     {

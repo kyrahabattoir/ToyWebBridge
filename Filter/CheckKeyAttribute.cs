@@ -1,11 +1,11 @@
-﻿using ButtplugWebBridge.Services;
+﻿using ToyWebBridge.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Threading.Tasks;
 
-namespace ButtplugWebBridge.Filter
+namespace ToyWebBridge.Filter
 {
     [AttributeUsage(validOn: AttributeTargets.Class)]
     public class CheckKeyAttribute : Attribute, IAsyncActionFilter

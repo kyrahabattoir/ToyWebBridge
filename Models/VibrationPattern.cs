@@ -1,7 +1,7 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
 using System.Collections.Generic;
 
-namespace ButtplugWebBridge.Models
+namespace ToyWebBridge.Models
 {
     public class VibrationPattern
     {
