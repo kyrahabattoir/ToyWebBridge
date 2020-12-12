@@ -10,12 +10,13 @@ using UniqueKey;
 
 namespace ToyWebBridge.Services
 {
+    enum ConnState { NO, CONNECTING, YES }
     public class WebsocketService : IHostedService, IDisposable
     {
         private readonly ILogger<WebsocketService> _logger;
         private readonly BridgeSettings _settings;
         private Timer _timer;
-        private bool isConnected;
+        private ConnState isConnected = ConnState.NO;
         private bool isScanning;
 
         private DeviceRegister Register { get; }
@@ -36,9 +37,10 @@ namespace ToyWebBridge.Services
             if (_settings.SecretKey == string.Empty)
             {
                 _settings.SecretKey = KeyGenerator.GetUniqueKey(20);
-                _logger.LogWarning($"\n /!\\ Web bridge (generated) access key: " + _settings.SecretKey + " /!\\\n");
+                _logger.LogWarning($"\n /!\\ Web bridge (generated) SecretKey: " + _settings.SecretKey + " /!\\\n");
             }
-            _logger.LogWarning("HASH  " + _settings.SecretKey);
+            else
+                _logger.LogWarning($"\n /!\\ Web bridge SecretKey: " + _settings.SecretKey + " /!\\\n");
 
             _timer = new Timer(MonitorWebsocket, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
 
@@ -57,10 +59,8 @@ namespace ToyWebBridge.Services
         {
             if (client != null)
             {
-                if (isConnected)
-                {
-                    return;
-                }
+                if (isConnected != ConnState.NO) return;
+
                 await Disconnect();
             }
             await Connect();
@@ -71,13 +71,11 @@ namespace ToyWebBridge.Services
         void OnDisconnected()
         {
             _logger.LogInformation("Disconnected from Intiface.");
-            isConnected = false;
-            isScanning = false;
             Register.RemoveAllDevices();
-        }
-        void OnPingTimeout()
-        {
-            _logger.LogInformation("Timeout.");
+
+            isConnected = ConnState.NO; //We are alreadyn disconnected, skip,disconnect process.
+            isScanning = false;
+            Disconnect().Wait();
         }
         void OnScanFinished()
         {
@@ -89,11 +87,12 @@ namespace ToyWebBridge.Services
         ********************************/
         public async Task Connect()
         {
-            if (isConnected) return;
+            if (isConnected != ConnState.NO) return;
 
             _logger.LogInformation("Connecting...");
 
             client = new ButtplugClient("Simple HTTP Bridge");
+            isConnected = ConnState.CONNECTING;
             try
             {
                 await client.ConnectAsync(new ButtplugWebsocketConnectorOptions(new Uri("ws://localhost:12345/buttplug")));
@@ -101,18 +100,17 @@ namespace ToyWebBridge.Services
             catch (ButtplugException)
             {
                 _logger.LogError("Connection failed.");
+                isConnected = ConnState.NO;
                 client.Dispose();
                 client = null;
                 return;
             }
-
+            isConnected = ConnState.YES;
             _logger.LogInformation("Connected to intiface!");
-            isConnected = true;
 
             client.DeviceAdded += (aObj, args) => Register.AddDevice(args.Device);
             client.DeviceRemoved += (aObj, args) => Register.RemoveDevice(args.Device);
             client.ErrorReceived += (aObj, args) => _logger.LogError($"Stuff fucked up {args.Exception.Message}", args.Exception);
-            client.PingTimeout += (aObj, args) => OnPingTimeout();
             client.ScanningFinished += (aObj, args) => OnScanFinished();
             client.ServerDisconnect += (aObj, args) => OnDisconnected();
 
@@ -120,17 +118,19 @@ namespace ToyWebBridge.Services
         }
         public async Task Disconnect()
         {
-            if (client != null && isConnected)
+            if (client != null)
             {
-                if (isConnected)
-                {
+                if (isConnected == ConnState.YES)
                     await StopScanning();
+
+                if (isConnected != ConnState.NO)
                     await client.DisconnectAsync();
-                }
+
                 client.Dispose();
                 client = null;
             }
-            isConnected = false;
+            isScanning = false;
+            isConnected = ConnState.NO;
         }
         /********************************
         * Etc, etc...
