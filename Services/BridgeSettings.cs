@@ -9,6 +9,8 @@ namespace ToyWebBridge.Services
         public bool DeviceNameCloaking { get; set; }
         public Dictionary<string, string> NameCloakingTable { get; set; }
 
+        public uint WebSocketPort { get; set; }
+
         public static BridgeSettings Instance;
         public BridgeSettings()
         {
