@@ -21,17 +21,12 @@ namespace ToyWebBridge.Services
         private ButtplugClient client;
         private string _websocket_url;
 
-        public event Action ServerDisconnectEvent;
-        public Action<ButtplugClientDevice> DeviceAddedEvent;
-        public Action<ButtplugClientDevice> DeviceRemovedEvent;
-
         public WebsocketService(ILogger<WebsocketService> logger, DeviceRegister register, IOptions<BridgeSettings> settings)
         {
             _logger = logger;
             _settings = settings.Value;
 
             Register = register;
-            ServerDisconnectEvent += Register.OnServerDisconnect;
         }
         /********************************
          * Service start/stop
@@ -49,12 +44,13 @@ namespace ToyWebBridge.Services
                 _logger.LogWarning($"\n /!\\ Web bridge SecretKey: " + _settings.SecretKey + " /!\\\n");
 
             client = new ButtplugClient("Simple HTTP Bridge");
-            client.DeviceAdded += (source, args) => DeviceAddedEvent(args.Device);
-            client.DeviceRemoved += (source, args) => DeviceRemovedEvent(args.Device);
+            client.DeviceAdded += (source, args) => Register.OnDeviceAdded(args.Device);
+            client.DeviceRemoved += (source, args) => Register.OnDeviceRemoved(args.Device);
             client.ErrorReceived += OnErrorReceived;
             client.PingTimeout += OnPingTimeout;
             client.ScanningFinished += OnScanningFinished;
             client.ServerDisconnect += OnServerDisconnect;
+            client.ServerDisconnect += (source, args) => Register.OnServerDisconnect();
 
             _websocket_url = string.Format("ws://localhost:{0}/buttplug", _settings.WebSocketPort);
             _logger.LogInformation("Websocket url is: " + _websocket_url);
@@ -137,8 +133,6 @@ namespace ToyWebBridge.Services
         {
             if (!client.Connected)
                 return;
-
-            ServerDisconnectEvent();
 
             await StopScanning();
             await client.DisconnectAsync();

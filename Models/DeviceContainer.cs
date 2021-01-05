@@ -24,6 +24,10 @@ namespace ToyWebBridge.Models
         {
             _logger = logger;
             _device = device;
+
+            //This is just convenience, should the ButtPlug server crash while the device is on,
+            //so when the device comes back we first stop whatever it was doing.
+            _ = StopDeviceCmd();
         }
 
         public async Task<bool> SendVibrateCmd(uint speed)
