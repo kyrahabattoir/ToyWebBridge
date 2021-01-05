@@ -30,6 +30,10 @@ You can hide the actual model of each registered device in **appsettings.json**.
 * If no **DeviceNameCloaking** is set, entries in **NameCloakingTable** will be replaced by their respective value.
 * Values in **NameCloakingTable** don't have to be unique (duplicates will be given a unique number).
 
+## Using multiple identical devices
+Using multiple identical devices is supported and duplicates will show as "Devicename 2" , "Devicename 3" and so on.
+There is currently no way to uniquely identify each device under the ButtPlug API, so they are registered on a first come, first served basis.
+
 ## API
 Examples use localhost:5000 as the Toy Web Bridge address and "Lovense Hush" as the device.
 
