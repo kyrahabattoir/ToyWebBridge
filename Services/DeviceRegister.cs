@@ -26,9 +26,17 @@ namespace ToyWebBridge.Services
         readonly IDictionary<string, DeviceContainer> devices = new ConcurrentDictionary<string, DeviceContainer>();
 
         /// <summary>
+        /// Called when the server disconnects.
+        /// </summary>
+        public void OnServerDisconnect()
+        {
+            devices.Clear();
+        }
+
+        /// <summary>
         /// Called when a device is announced by intiface.
         /// </summary>
-        public void AddDevice(ButtplugClientDevice device)
+        public void OnDeviceAdded(ButtplugClientDevice device)
         {
             string name = device.Name;
             string real_name = ".";
@@ -49,7 +57,7 @@ namespace ToyWebBridge.Services
         /// <summary>
         /// Called when a device is removed by intiface.
         /// </summary>
-        public void RemoveDevice(ButtplugClientDevice device)
+        public void OnDeviceRemoved(ButtplugClientDevice device)
         {
             if (!devices.ContainsKey(device.Name))
             {
@@ -58,16 +66,8 @@ namespace ToyWebBridge.Services
             }
 
             _logger.LogInformation("Device Removed: " + device.Name);
-            devices.Remove(device.Name);
-        }
 
-        /// <summary>
-        /// Removes all registered devices/
-        /// When we get disconnected from intiface (crash usually)
-        /// </summary>
-        public void RemoveAllDevices()
-        {
-            devices.Clear();
+            devices.Remove(device.Name);
         }
 
         public List<string> ListDevices()
@@ -121,6 +121,7 @@ namespace ToyWebBridge.Services
             if (device.VibrationMotorCount != speed.Count())
             {
                 _logger.LogInformation("SendVibrateCmd: failed featurecount check.");
+
                 return false;
             }
 
@@ -152,7 +153,8 @@ namespace ToyWebBridge.Services
             //Should we just remove spaces in toy names?
             //name.Replace(" ", "_");
 
-            if (!devices.ContainsKey(name)) return name;
+            if (!devices.ContainsKey(name))
+                return name;
 
             int suffix = 2;
             string new_name;

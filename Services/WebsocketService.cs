@@ -20,11 +20,18 @@ namespace ToyWebBridge.Services
         private DeviceRegister Register { get; }
         private ButtplugClient client;
         private string _websocket_url;
+
+        public event Action ServerDisconnectEvent;
+        public Action<ButtplugClientDevice> DeviceAddedEvent;
+        public Action<ButtplugClientDevice> DeviceRemovedEvent;
+
         public WebsocketService(ILogger<WebsocketService> logger, DeviceRegister register, IOptions<BridgeSettings> settings)
         {
             _logger = logger;
             _settings = settings.Value;
+
             Register = register;
+            ServerDisconnectEvent += Register.OnServerDisconnect;
         }
         /********************************
          * Service start/stop
@@ -42,8 +49,8 @@ namespace ToyWebBridge.Services
                 _logger.LogWarning($"\n /!\\ Web bridge SecretKey: " + _settings.SecretKey + " /!\\\n");
 
             client = new ButtplugClient("Simple HTTP Bridge");
-            client.DeviceAdded += OnDeviceAdded;
-            client.DeviceRemoved += OnDeviceRemoved;
+            client.DeviceAdded += (source, args) => DeviceAddedEvent(args.Device);
+            client.DeviceRemoved += (source, args) => DeviceRemovedEvent(args.Device);
             client.ErrorReceived += OnErrorReceived;
             client.PingTimeout += OnPingTimeout;
             client.ScanningFinished += OnScanningFinished;
@@ -53,12 +60,14 @@ namespace ToyWebBridge.Services
             _logger.LogInformation("Websocket url is: " + _websocket_url);
 
             _timer = new Timer(MonitorWebsocket, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+
             return Task.CompletedTask;
         }
         public Task StopAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Toy Web Bridge Service is stopping.");
             _timer?.Change(Timeout.Infinite, 0);
+
             return Task.CompletedTask;
         }
         /********************************
@@ -70,7 +79,8 @@ namespace ToyWebBridge.Services
         /// <param name="state"></param>
         private async void MonitorWebsocket(object sender)
         {
-            if (client.Connected) return;
+            if (client.Connected)
+                return;
 
             await Disconnect();
             await Connect();
@@ -78,14 +88,6 @@ namespace ToyWebBridge.Services
         /********************************
         * Buttplug Client Events
         ********************************/
-        void OnDeviceAdded(object s, DeviceAddedEventArgs args)
-        {
-            Register.AddDevice(args.Device);
-        }
-        void OnDeviceRemoved(object s, DeviceRemovedEventArgs args)
-        {
-            Register.RemoveDevice(args.Device);
-        }
         void OnErrorReceived(object s, ButtplugExceptionEventArgs args)
         {
             _logger.LogError($"Stuff fucked up! '{0}'", args.Exception.Message);
@@ -97,12 +99,12 @@ namespace ToyWebBridge.Services
         void OnScanningFinished(object s, EventArgs args)
         {
             _logger.LogInformation("Scan complete.");
+
             isScanning = false;
         }
         void OnServerDisconnect(object s, EventArgs args)
         {
             _logger.LogInformation("Disconnected from Intiface.");
-            Register.RemoveAllDevices();
 
             isScanning = false;
             Disconnect().Wait();
@@ -112,7 +114,8 @@ namespace ToyWebBridge.Services
         ********************************/
         public async Task Connect()
         {
-            if (client.Connected) return;
+            if (client.Connected)
+                return;
 
             _logger.LogInformation("Connecting...");
 
@@ -132,7 +135,10 @@ namespace ToyWebBridge.Services
         }
         public async Task Disconnect()
         {
-            if (!client.Connected) return;
+            if (!client.Connected)
+                return;
+
+            ServerDisconnectEvent();
 
             await StopScanning();
             await client.DisconnectAsync();
@@ -142,22 +148,30 @@ namespace ToyWebBridge.Services
         ********************************/
         async Task StartScanning()
         {
-            if (isScanning) return;
+            if (isScanning)
+                return;
+
             isScanning = true;
 
-            if (!client.Connected) return;
+            if (!client.Connected)
+                return;
 
             _logger.LogInformation("Scanning for devices...");
+
             await client.StartScanningAsync();
         }
         async Task StopScanning()
         {
-            if (!isScanning) return;
+            if (!isScanning)
+                return;
+
             isScanning = false;
 
-            if (!client.Connected) return;
+            if (!client.Connected)
+                return;
 
             _logger.LogInformation("Stop Scanning...");
+
             await client.StopScanningAsync();
         }
         public void Dispose()
