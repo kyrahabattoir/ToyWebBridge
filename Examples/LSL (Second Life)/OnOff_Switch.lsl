@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
 
-//Public ip/domain and port to access Buttplug Web Bridge.
+//Public ip/domain and port to access the Toy Web Bridge.
 string address = "somedomain.someip";
 integer port = 5000;
 
@@ -8,7 +8,7 @@ integer port = 5000;
 string device = "Device Name";
 integer speed = 25; //from 0 (off) to 100 (max vibration)
 
-//The access key expected by Buttplug Web Bridge
+//The access key expected by the Toy Web Bridge
 string access_key = "CHANGEME";
 
 integer Clamp(integer v)

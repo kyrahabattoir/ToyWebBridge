@@ -1,10 +1,10 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
 
-//Public ip/domain and port to access Buttplug Web Bridge.
+//Public ip/domain and port to access the Toy Web Bridge.
 string address = "somedomain.someip";
 integer port = 5000;
 
-//The access key expected by Buttplug Web Bridge
+//The access key expected by the Toy Web Bridge
 string access_key = "CHANGEME";
 
 
