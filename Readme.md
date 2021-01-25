@@ -25,10 +25,11 @@ I made this program to control toys from "Second Life" scripts which effectively
 * If no **SecretKey** is set, a temporary key will be generated (and displayed in the console window).
 * To connect to the Web bridge, apps have to supply a header parameter named "SecretKey" with the proper value.
 
-## Privacy
-You can hide the actual model of each registered device in **appsettings.json**.
-* If no **DeviceNameCloaking** is set, entries in **NameCloakingTable** will be replaced by their respective value.
-* Values in **NameCloakingTable** don't have to be unique (duplicates will be given a unique number).
+## Per toy configuration.
+Each toy type can have a custom configuration in the ToySettings section of **appsettings.json**.
+* (Optional) CommandDelay: By default, the maximum command rate is 50ms. You can set a longer value for a specific toy here.
+* (Optional) PowerFactor: By default, You can limit the actual power range of a toy here, if 100% is too strong.
+* (Optional) VisibleName: The toy will be identified under this name rather than the device name (useful for privacy).
 
 ## Using multiple identical devices
 Using multiple identical devices is supported and duplicates will show as "Devicename 2" , "Devicename 3" and so on.
