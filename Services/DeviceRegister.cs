@@ -39,19 +39,29 @@ namespace ToyWebBridge.Services
         public void OnDeviceAdded(ButtplugClientDevice device)
         {
             string name = device.Name;
-            string real_name = ".";
+            string real_name = name;
 
-            if (_settings.DeviceNameCloaking)
+            ToySettings toy = _settings.GetToy(device.Name);
+
+            if (toy != null && toy.VisibleName != null && toy.VisibleName.Length > 0)
+                name = DeCollideDeviceName(toy.VisibleName);
+            else
+                name = DeCollideDeviceName(toy.Name);
+
+            uint toy_delay = BridgeSettings.MIN_COMMAND_RATE;
+            uint toy_power = 100;
+            if (toy != null)
             {
-                real_name = string.Format(" ({0}).", device.Name);
-                name = CloakDeviceName(name);
+                if (toy.CommandRate.HasValue)
+                    toy_delay = Math.Max(BridgeSettings.MIN_COMMAND_RATE, toy.CommandRate.Value);
+
+                if (toy.PowerFactor.HasValue)
+                    toy_power = toy.PowerFactor.Value;
             }
 
-            name = DeCollideDeviceName(name);
+            devices.Add(name, new DeviceContainer(device, _logger, toy_delay, toy_power));
 
-            devices.Add(name, new DeviceContainer(device, _logger));
-
-            _logger.LogInformation(String.Format("New device detected: {0}{1}", name, real_name));
+            _logger.LogInformation(String.Format("\nNew device detected\n{0} ({1})\n  Update rate: {2}ms\n  Power: {3}%", name, real_name, toy_delay, toy_power));
         }
 
         /// <summary>
@@ -166,18 +176,6 @@ namespace ToyWebBridge.Services
             while (devices.ContainsKey(new_name));
 
             return new_name;
-        }
-        /// <summary>
-        /// Cloaks the device's name.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        private string CloakDeviceName(string name)
-        {
-            if (!_settings.NameCloakingTable.ContainsKey(name))
-                return name;
-
-            return _settings.NameCloakingTable[name];
         }
 
         public bool SequenceVibrateCmd(string device_name, VibrationPattern pattern)

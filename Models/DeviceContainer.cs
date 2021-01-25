@@ -17,17 +17,32 @@ namespace ToyWebBridge.Models
         private readonly ILogger<DeviceRegister> _logger;
 
         readonly ButtplugClientDevice _device;
+        readonly int _command_delay;
+        readonly float _power_multiplier;
+        bool _busy = false;
 
         CancellationTokenSource _runner;
 
-        public DeviceContainer(ButtplugClientDevice device, ILogger<DeviceRegister> logger)
+        public DeviceContainer(ButtplugClientDevice device, ILogger<DeviceRegister> logger, uint command_delay, uint power_factor)
         {
-            _logger = logger;
             _device = device;
+            _logger = logger;
+            _command_delay = (int)command_delay;
+            _power_multiplier = Math.Clamp(power_factor / 100.0f, 0f, 1f);
 
             //This is just convenience, should the ButtPlug server crash while the device is on,
             //so when the device comes back we first stop whatever it was doing.
             _ = StopDeviceCmd();
+        }
+        /// <summary>
+        /// Acts like a semaphore, blocking new instructions while it is running.
+        /// </summary>
+        /// <returns></returns>
+        async Task SetBusy()
+        {
+            _busy = true;
+            await Task.Delay(_command_delay);
+            _busy = false;
         }
 
         public async Task<bool> SendVibrateCmd(uint speed)
@@ -35,10 +50,14 @@ namespace ToyWebBridge.Models
             if (VibrationMotorCount == 0)
                 return false;
 
+            if (_busy)
+                return false;
+
             if (_runner != null)
                 _runner.Cancel();
 
-            await _device.SendVibrateCmd(Math.Clamp(speed * 0.01f, 0f, 1f));
+            _ = SetBusy();
+            await _device.SendVibrateCmd(Math.Clamp(speed * 0.01f * _power_multiplier, 0f, 1f));
             return true;
         }
 
@@ -47,13 +66,17 @@ namespace ToyWebBridge.Models
             if (VibrationMotorCount != speed.Count())
                 return false;
 
+            if (_busy)
+                return false;
+
             List<double> data = new List<double>();
             foreach (uint entry in speed)
-                data.Add(Math.Clamp(entry * 0.01f, 0f, 1f));
+                data.Add(Math.Clamp(entry * 0.01f * _power_multiplier, 0f, 1f));
 
             if (_runner != null)
                 _runner.Cancel();
 
+            _ = SetBusy();
             await _device.SendVibrateCmd(data);
             return true;
         }
@@ -66,6 +89,7 @@ namespace ToyWebBridge.Models
             if (_runner != null)
                 _runner.Cancel();
 
+            //_ = SetBusy(); Probably a good idea to bypass the delay just for this command.
             await _device.SendStopDeviceCmd();
             return true;
         }
@@ -113,17 +137,21 @@ namespace ToyWebBridge.Models
                 {
                     var motor_index = i;
                     //if there is only one motor entry, only use that.
-                    if(pattern.Speeds.Count == 1)
+                    if (pattern.Speeds.Count == 1)
                         motor_index = 0;
 
                     //if a motor entry/value was not supplied in the pattern, no big deal, assume zero.
                     var motor_entry = pattern.Speeds.ElementAtOrDefault(motor_index);
                     var motor_speed = motor_entry.ElementAtOrDefault(sequence_index);
-                    payload.Add(Math.Clamp(motor_speed * 0.01f, 0f, 1f));
+                    payload.Add(Math.Clamp(motor_speed * 0.01f * _power_multiplier, 0f, 1f));
                 }
 
                 //2. send the payload
-                await _device.SendVibrateCmd(payload);
+                if (!_busy)
+                {
+                    _ = SetBusy();
+                    await _device.SendVibrateCmd(payload);
+                }
 
                 //3. sleep
                 await Task.Delay(time);
