@@ -1,14 +1,17 @@
 ﻿/* SPDX-License-Identifier: CC-BY-NC-SA-4.0 */
 using System.Collections.Generic;
+using System.Net;
 
 namespace ToyWebBridge.Services
 {
     public class BridgeSettings
     {
         public const uint MIN_COMMAND_RATE = 50;
+
+        public string[] AllowedIPs { get; set; }
         public string SecretKey { get; set; }
-        public uint WebSocketPort { get; set; }
         public ToySettings[] ToySettings { get; set; }
+        public uint WebSocketPort { get; set; }
 
         public static BridgeSettings Instance;
 
@@ -43,8 +46,8 @@ namespace ToyWebBridge.Services
     public class ToySettings
     {
         public uint? CommandRate { get; set; }
-        public uint? PowerFactor { get; set; }
         public string Name { get; set; }
+        public uint? PowerFactor { get; set; }
         public string VisibleName { get; set; }
     }
 }
