@@ -46,7 +46,7 @@ namespace ToyWebBridge.Services
             if (toy != null && toy.VisibleName != null && toy.VisibleName.Length > 0)
                 name = DeCollideDeviceName(toy.VisibleName);
             else
-                name = DeCollideDeviceName(toy.Name);
+                name = DeCollideDeviceName(name);
 
             uint toy_delay = BridgeSettings.MIN_COMMAND_RATE;
             uint toy_power = 100;
