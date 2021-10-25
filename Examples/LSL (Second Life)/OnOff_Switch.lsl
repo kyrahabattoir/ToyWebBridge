@@ -45,7 +45,10 @@ default
         if(queryId) return;     //Ignores clicks until we processed the Web Bridge reply.
 
         on = !on;
-        queryId = SendQuery("VibrateCmd",device,(string)Clamp(speed*on));
+        if(on)
+            queryId = SendQuery("VibrateCmd",device,(string)Clamp(speed*on));
+        else
+            queryId = SendQuery("StopDeviceCmd",device,"");
     }
     http_response(key id, integer status, list meta, string body)
     {
@@ -56,16 +59,16 @@ default
         if(llJsonValueType(body,["Action"]) == JSON_INVALID)
         {
             if(status == 404)
-                llSetText("Web Bridge not found.",<1,1,1>,1.0);
+                llOwnerSay("Web Bridge/Command not found.");
             else if(status == 401)
-                llSetText("Access key rejected.",<1,1,1>,1.0);
+                llOwnerSay("Access key rejected.");
             return;
         }
 
         //404 at this stage means device not found.
         if(status == 404)
         {
-            llSetText("Device does not exist.",<1,1,1>,1.0);
+            llOwnerSay("Device does not exist.");
             return;
         }
         if(status != 200)
@@ -75,10 +78,22 @@ default
         }
 
         string command = llJsonGetValue(body,["Action"]);
-        if(command == "VibrateCmd")
+        integer speed = (integer)llJsonGetValue(body,["Speed"]);
+
+        if( (command == "VibrateCmd") && speed)
         {
-            string speed = llJsonGetValue(body,["Speed"]);
-            llSetText("Vibrating at: "+speed+"%",<1,1,1>,1.0);
+            llOwnerSay("Vibrating at: "+(string)speed+"%");
+            return;
         }
+
+        else if(command == "StopDeviceCmd" || command == "VibrateCmd")
+        {
+            llOwnerSay("Stopped");
+            return;
+        }
+
+        llOwnerSay("!Unparsed return data!");
+        llOwnerSay("Status: " + (string)status);
+        llOwnerSay("Body: " + body);
     }
 }
